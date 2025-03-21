@@ -62,7 +62,7 @@ An AI-driven tour recommendation platform built with a Django backend (using Pos
 ## Project Structure
 
 ```
-ai_tour_platform/
+tour_recommendation/
 ├── backend/                     # Django project folder
 │   ├── manage.py
 │   ├── requirements.txt
