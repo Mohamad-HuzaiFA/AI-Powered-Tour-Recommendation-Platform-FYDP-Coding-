@@ -1,0 +1,104 @@
+    /* Global Styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+    }
+
+    /* Adventure Section Layout */
+    .adventure-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 20px;
+    }
+
+    /* Left Side - Text Content */
+    .text-content {
+        max-width: 45%;
+        margin-left:100px;
+    }
+
+    .category {
+        font-size: 14px;
+        font-weight: 700;
+        color: #d66a4c;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #0e1735;
+        margin-bottom: 20px;
+    }
+
+        .title span {
+            color: #d66a4c;
+        }
+
+    .description {
+        font-size: 14px;
+        color: #5f5f5f;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    /* Button */
+    .btn {
+        background: #d66a4c;
+        color: white;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .btn:hover {
+            background: #b8563f;
+        }
+
+    /* Right Side - Curved Image */
+    .image-container {
+        position: relative;
+        max-width: 50%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .arch-image {
+        width: 100%;
+        max-width: 350px;
+        height: 450px;
+        border-radius: 50% 50% 0 0;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+        .arch-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    /* Label on Image */
+    .image-label {
+        position: absolute;
+        left: -50px;
+        bottom: 0;
+        writing-mode: vertical-rl;
+        font-size: 30px;
+        margin:10px;
+        font-weight: 700;
+        color: rgba(0, 0, 0, 0.2);
+    }
+

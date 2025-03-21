@@ -1,0 +1,173 @@
+    /* Global Styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+    }
+
+    /* Booking Section Layout */
+    .booking-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 20px;
+    }
+
+    /* Left Side - Text Content */
+    .text-content {
+        max-width: 45%;
+    }
+
+    .category {
+        font-size: 14px;
+        font-weight: 700;
+        color: #d66a4c;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #0e1735;
+        margin-bottom: 20px;
+    }
+
+        .title span {
+            color: #d66a4c;
+        }
+
+    /* Steps Section */
+    .steps {
+        margin-top: 20px;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+        .step img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .step h4 {
+
+            font-size: 16px;
+            text-align: start;
+            font-weight: 00;
+            margin: 0;
+        }
+
+        .step p {
+            font-size: 14px;
+            text-align: start;
+            color: #5f5f5f;
+            line-height: 1.6;
+        }
+
+    /* Right Side - Booking Cards */
+    .booking-cards {
+        position: relative;
+        max-width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left:50px;
+    }
+
+ 
+    /* Main Booking Card */
+    .card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 280px;
+        transition: 0.3s ease-in-out;
+        position: relative;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 160px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .card h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #5f5f5f;
+            margin-top: 5px;
+        }
+
+    .info-icons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        font-size: 18px;
+        margin-top: 8px;
+    }
+
+    .people {
+        font-size: 12px;
+        color: #777;
+        margin-top: 8px;
+    }
+
+    /* Trip Progress Card */
+    .progress-card {
+        background: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        max-width: 200px;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    .status {
+        font-size: 12px;
+        color: #777;
+    }
+
+    .progress-text {
+        font-size: 12px;
+        color: #d66a4c;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 5px;
+        background: #eee;
+        border-radius: 5px;
+        margin-top: 5px;
+        position: relative;
+    }
+
+    .progress {
+        width: 40%;
+        height: 100%;
+        background: #d66a4c;
+        border-radius: 5px;
+    }
+

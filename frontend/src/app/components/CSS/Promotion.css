@@ -1,0 +1,93 @@
+.bodyContent {
+    background: #fff;
+    padding: 50px;
+  }
+  
+  /* TOUR SECTION */
+  .tour-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+    gap: 50px;
+  }
+  
+  /* TEXT CONTENT */
+  .tour-content {
+    flex: 1;
+  }
+  
+  .promotion-text {
+    color: #d44a39;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .tour-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2743;
+    margin: 10px 0;
+  }
+  
+  .tour-content p {
+    font-size: 1rem;
+    color: #4a4a4a;
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    background: #ff6b5b;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+    transition: 0.3s ease-in-out;
+  }
+  
+  .btn:hover {
+    background: #e05448;
+  }
+  
+  /* IMAGE SECTION */
+  .tour-image {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .tour-image img {
+    width: 350px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* DECORATIVE CIRCLES */
+  .circle-decor {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    border: 2px dashed #d44a39;
+    animation: rotate 10s linear infinite;
+  }
+  
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

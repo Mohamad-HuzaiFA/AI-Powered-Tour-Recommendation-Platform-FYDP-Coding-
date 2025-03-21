@@ -1,0 +1,104 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.body {
+    background-color: #111;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('/assets/images/SignupBackground.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.container {
+    position: relative;
+    text-align: left;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    position: relative;
+    color: white;
+}
+
+    .title .arrow {
+        font-size: 1.5rem;
+        display: inline-block;
+        transform: rotate(10deg);
+    }
+
+.signup-form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .signup-form input {
+        background: #333;
+        border: none;
+        color: white;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+
+        .signup-form input::placeholder {
+            color: #bbb;
+        }
+
+    .signup-form button {
+        background: #ff6b5b;
+        border: none;
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        .signup-form button:hover {
+            background: #e05448;
+        }
+
+.already-account {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.image-overlay {
+    position: absolute;
+    right: -150px;
+    bottom: -20px;
+    width: 300px;
+    opacity: 0.7;
+}
+
+    .image-overlay img {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+
+.error-message {
+        color: red;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        background: rgba(255, 0, 0, 0.1);
+        padding: 8px;
+        border-radius: 5px;
+}
+      

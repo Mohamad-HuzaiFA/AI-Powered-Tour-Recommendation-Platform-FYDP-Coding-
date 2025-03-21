@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.body {
+    background-color: #111;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('/assets/images/SignupBackground.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.container {
+    position: relative;
+    text-align: center;
+    max-width: 400px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+.signup-form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .signup-form input {
+        background: #333;
+        border: none;
+        color: white;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+
+        .signup-form input::placeholder {
+            color: #bbb;
+        }
+
+    .signup-form button {
+        background: #ff6b5b;
+        border: none;
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        .signup-form button:hover {
+            background: #e05448;
+        }
+
+.switch-page {
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+
+    .switch-page a {
+        color: #ff6b5b;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .switch-page a:hover {
+            text-decoration: underline;
+        }
