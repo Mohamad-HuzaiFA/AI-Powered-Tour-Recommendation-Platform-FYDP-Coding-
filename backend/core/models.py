@@ -2,6 +2,7 @@ import uuid
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 # ✅ User Model (Tourist & Tourism Company)
 class User(AbstractUser):
@@ -125,7 +126,8 @@ class Review(models.Model):
     tour = models.ForeignKey(TourPackage, on_delete=models.CASCADE, related_name="reviews")
     rating = models.IntegerField()
     comment = models.TextField()
-
+    created_at = models.DateTimeField(default=timezone.now) 
+    
     def __str__(self):
         return f"{self.user.username} - {self.tour.title} - {self.rating}"
 

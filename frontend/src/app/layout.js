@@ -45,7 +45,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Explore the World - Signup",
+  title: "Explore the World",
   description: "Join our travel community to discover amazing destinations!",
 };
 
