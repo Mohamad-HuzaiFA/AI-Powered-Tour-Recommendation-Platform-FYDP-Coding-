@@ -13,7 +13,7 @@ const SignUp = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    user_type: "tourist",
+    user_type: "",
   });
 
   const [error, setError] = useState(null);
@@ -163,7 +163,7 @@ const SignUp = () => {
                     icon: <AiOutlineUser />,
                   },
                   {
-                    type: "tourism_company",
+                    type: "company",
                     label: "Company",
                     icon: <FaBuilding />,
                   },
