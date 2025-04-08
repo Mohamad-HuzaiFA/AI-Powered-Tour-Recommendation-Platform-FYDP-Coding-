@@ -2,7 +2,7 @@
 
 # AI-Driven Tour Recommendation Platform
 
-An AI-driven tour recommendation platform built with a Django backend (using PostgreSQL) and a Next.js frontend. This project leverages modern best practices including JWT authentication, RESTful APIs, SWR for data fetching, and a scalable architecture.
+An AI-driven tour recommendation platform built with a Django backend (using PostgreSQL) and a Next.js frontend. This project leverages modern best practices including JWT authentication, RESTful APIs, and a scalable architecture.
 
 ---
 
@@ -25,7 +25,6 @@ An AI-driven tour recommendation platform built with a Django backend (using Pos
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 - [Future Enhancements](#future-enhancements)
-- [License](#license)
 
 ---
 
