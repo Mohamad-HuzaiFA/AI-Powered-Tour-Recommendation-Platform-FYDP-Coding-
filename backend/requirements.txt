@@ -1,14 +1,25 @@
-# Django framework
-Django>=4.2,<5.0
-
-# Django REST Framework for building APIs
-djangorestframework>=3.14.0,<4.0
-
-# JWT authentication for DRF
-djangorestframework-simplejwt>=5.2.2,<6.0
-
-# CORS headers to allow cross-origin requests from Next.js frontend
-django-cors-headers>=3.15.0,<4.0
-
-# PostgreSQL adapter for Python
-psycopg2-binary>=2.9.6,<3.0
+asgiref==3.8.1
+attrs==25.3.0
+Django==5.2
+django-cors-headers==3.14.0
+djangorestframework==3.16.0
+djangorestframework-simplejwt==5.5.0
+drf-spectacular==0.28.0
+inflection==0.5.1
+joblib==1.4.2
+jsonschema==4.23.0
+jsonschema-specifications==2024.10.1
+numpy==2.2.4
+Pillow==11.1.0
+psycopg2==2.9.10
+PyJWT==2.9.0
+PyYAML==6.0.2
+referencing==0.36.2
+rpds-py==0.24.0
+scikit-learn==1.6.1
+scipy==1.15.2
+sqlparse==0.5.3
+threadpoolctl==3.6.0
+typing_extensions==4.13.1
+tzdata==2025.2
+uritemplate==4.1.1
