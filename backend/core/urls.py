@@ -5,6 +5,9 @@ from .views import TourListCreateView, TourDetailView, TourImageUploadView, Uplo
 from .views import TourPackageListView, TourPackageCreateView, TourPackageDetailView
 from .views import CreateBookingView, TouristBookingListView, CompanyBookingListView, UpdateBookingStatusView
 from .views import PaymentCreateView, PaymentUpdateView, PaymentDetailView
+# from .api import recommend
+from . import api
+from core import api
 
 # from django.http import JsonResponse
 
@@ -42,6 +45,12 @@ urlpatterns = [
     # Review Endpoints
     path("reviews/create/", CreateReviewView.as_view(), name="create-review"),
     path("reviews/tour/<uuid:tour_id>/", TourReviewsListView.as_view(), name="tour-reviews"),
+    path('user/preferences/', api.save_preferences, name='save_preferences'),
+    
+    # Recommendation methods
+    path('recommend/hybrid/', api.recommend_hybrid, name='recommend_hybrid'),
+    path('recommend/content/', api.recommend_content, name='recommend_content'),
+    path('recommend/popular/', api.recommend_popular, name='recommend_popular'),
 
     # Notification Endpoints
     path("notifications/", UserNotificationsView.as_view(), name="user-notifications"),
