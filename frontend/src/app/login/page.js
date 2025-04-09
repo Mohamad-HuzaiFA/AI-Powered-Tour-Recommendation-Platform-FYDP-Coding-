@@ -201,7 +201,7 @@ const Login = () => {
       await axios.post("http://127.0.0.1:8000/api/login/", formData);
       setMessage("Login successful! Redirecting...");
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/recommendations/preferences");
       }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
