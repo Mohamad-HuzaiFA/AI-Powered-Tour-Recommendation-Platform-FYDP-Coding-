@@ -55,6 +55,22 @@ def protected_view(request):
 
     return Response({"message": f"Hello {request.user.username}, you have access!"})
 
+# views.py
+from django.http import JsonResponse
+from .models import Tour  # Make sure to import your Tour model
+
+def get_tour_types_and_locations(request):
+    # Get distinct tour types and locations from the Tour model
+    tour_types = Tour.objects.values_list('tour_type', flat=True).distinct()
+    locations = Tour.objects.values_list('location', flat=True).distinct()
+
+    # Return the data as JSON
+    return JsonResponse({
+        'tourTypes': list(tour_types),
+        'locations': list(locations),
+    })
+
+
 # Tour list - Both tourists & companies can view tours
 class TourListView(generics.ListAPIView):
     queryset = Tour.objects.all()
@@ -88,6 +104,7 @@ class TourDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 # Tour Image Upload View
 class TourImageUploadView(generics.CreateAPIView):
@@ -213,34 +230,6 @@ from rest_framework.views import APIView
 from .models import Booking, Payment
 from .serializers import PaymentSerializer
 
-#  Create a Payment (Simulated Payment Processing)
-# class PaymentCreateView(APIView):
-#     def post(self, request, *args, **kwargs):
-#         booking_id = request.data.get("booking")
-#         amount = request.data.get("amount")
-#         method = request.data.get("method")
-
-#         #  Ensure Booking Exists
-#         try:
-#             booking = Booking.objects.get(id=booking_id)
-#         except Booking.DoesNotExist:
-#             return Response({"error": "Booking not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#         #  Ensure Booking Doesn't Already Have a Payment
-#         if hasattr(booking, "payment"):
-#             return Response({"error": "Payment already exists for this booking"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         #  Create a Payment Entry (Simulated Payment)
-#         payment = Payment.objects.create(
-#             booking=booking,
-#             amount=amount,
-#             method=method,
-#             status="pending",  # Default status
-#         )
-
-#         serializer = PaymentSerializer(payment)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 class PaymentCreateView(APIView):
     def post(self, request, *args, **kwargs):
         booking_id = request.data.get("booking")
@@ -285,29 +274,6 @@ class PaymentDetailView(APIView):
         serializer = PaymentSerializer(payment)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-# #  Update Payment Status & Confirm Booking if Successful
-# class PaymentUpdateView(APIView):
-#     def patch(self, request, payment_id, *args, **kwargs):
-#         try:
-#             payment = Payment.objects.get(id=payment_id)
-#         except Payment.DoesNotExist:
-#             return Response({"error": "Payment not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#         new_status = request.data.get("status")
-#         if new_status not in ["successful", "failed"]:
-#             return Response({"error": "Invalid status update"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         #  Update Payment Status
-#         payment.status = new_status
-#         payment.save()
-
-#         #  If payment is successful, update the booking status to "confirmed"
-#         if new_status == "successful":
-#             payment.booking.status = "confirmed"
-#             payment.booking.save()
-
-#         return Response({"message": f"Payment updated to {new_status}"}, status=status.HTTP_200_OK)
 
 class PaymentUpdateView(APIView):
     permission_classes = [IsAuthenticated]  # Ensure only authenticated users or system can update

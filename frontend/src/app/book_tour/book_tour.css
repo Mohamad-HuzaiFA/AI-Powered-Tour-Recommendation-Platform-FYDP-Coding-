@@ -1,0 +1,37 @@
+
+.secondPart{
+    margin-left: 200px;
+    margin-right: 200px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(240, 235, 235, 0.925);
+}
+.myOptions{
+    padding: 40px;
+    display: flex;
+  justify-content: center;
+    background-color: rgba(172, 168, 168, 0.452);
+}
+
+.main-part{
+    margin: 50px;
+    display:flex;
+    gap: 20px;
+
+}
+.ImagesCard{
+    align-items: center;
+}
+.bookPart{
+    padding: 20px;
+    background-color: rgba(199, 196, 196, 0.87);
+}
+.bookPart p{
+    padding: 10px;
+}
+.bookPart input{
+    margin: 10px;
+}
+.myImage{
+    width: 100%;
+}

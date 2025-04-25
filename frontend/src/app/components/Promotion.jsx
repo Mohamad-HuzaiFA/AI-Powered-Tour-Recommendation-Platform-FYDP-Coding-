@@ -19,7 +19,7 @@ const Promotion = () => {
             comfort and unforgettable memories. Let us guide you through the
             best destinations Pakistan has to offer!
           </p>
-          <a href="#" className="btn">
+          <a href="/signup" className="btn">
             View Packages
           </a>
         </div>

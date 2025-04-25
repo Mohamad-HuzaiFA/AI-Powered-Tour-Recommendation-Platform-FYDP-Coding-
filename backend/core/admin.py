@@ -132,6 +132,11 @@ class TourGalleryAdmin(admin.ModelAdmin):
     list_display = ('tour', 'uploaded_at')
     readonly_fields = ('uploaded_at',)
 
+class TourGalleryInline(admin.TabularInline):  # or admin.StackedInline if you prefer
+    model = TourGallery
+    extra = 1  # This controls how many empty forms to display by default in the admin interface.
+    fields = ('image',)  # Customize the fields shown in the inline form if needed.
+
 # Booking Admin
 class BookingAdmin(admin.ModelAdmin):
     list_display = ('user', 'tour', 'status', 'booking_date', 'number_of_people')

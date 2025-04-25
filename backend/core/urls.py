@@ -9,6 +9,8 @@ from .views import PaymentCreateView, PaymentUpdateView, PaymentDetailView
 from . import api
 from core import api
 
+from core import views
+
 # from django.http import JsonResponse
 
 # def test_view(request):
@@ -26,6 +28,8 @@ urlpatterns = [
     path('tours/', TourListCreateView.as_view(), name="tour-list-create"),
     path('tours/<uuid:pk>/', TourDetailView.as_view(), name="tour-detail"),
     path('tours/upload-image/', TourImageUploadView.as_view(), name="tour-image-upload"),
+    
+    path('tour-types-and-locations/', views.get_tour_types_and_locations, name='tour-types-and-locations'),
 
     path('tours/<uuid:tour_id>/upload-images/', UploadTourGalleryImageView.as_view(), name='upload-tour-images'),
     

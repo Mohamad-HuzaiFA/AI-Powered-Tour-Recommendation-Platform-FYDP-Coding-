@@ -3,11 +3,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { AiOutlineUser, AiOutlineMail, AiOutlineLock } from "react-icons/ai";
+import { AiOutlineUser, AiOutlineMail, AiOutlineLock,AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 import { FaCheckCircle, FaExclamationCircle, FaBuilding } from "react-icons/fa";
 
 const SignUp = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -43,11 +47,11 @@ const SignUp = () => {
     };
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/signup/", payload);
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/signup/`, payload);
       setMessage("Signup successful! Redirecting...");
       setTimeout(() => {
         router.push("/login");
-      }, 2000);
+      }, 100);
     } catch (err) {
       console.error("Signup error:", err);
       setError(
@@ -104,51 +108,77 @@ const SignUp = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Input Fields */}
             {[
-              {
-                label: "Username",
-                name: "username",
-                type: "text",
-                icon: <AiOutlineUser />,
-              },
-              {
-                label: "Email",
-                name: "email",
-                type: "email",
-                icon: <AiOutlineMail />,
-              },
-              {
-                label: "Password",
-                name: "password",
-                type: "password",
-                icon: <AiOutlineLock />,
-              },
-              {
-                label: "Confirm Password",
-                name: "confirmPassword",
-                type: "password",
-                icon: <AiOutlineLock />,
-              },
-            ].map((field, index) => (
-              <div key={index}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {field.label}
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    {field.icon}
-                  </span>
-                  <input
-                    type={field.type}
-                    name={field.name}
-                    placeholder={`Enter ${field.label.toLowerCase()}`}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    required
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-gray-100 hover:bg-white placeholder:text-gray-400"
-                  />
-                </div>
-              </div>
-            ))}
+  {
+    label: "Username",
+    name: "username",
+    type: "text",
+    icon: <AiOutlineUser />,
+  },
+  {
+    label: "Email",
+    name: "email",
+    type: "email",
+    icon: <AiOutlineMail />,
+  },
+  {
+    label: "Password",
+    name: "password",
+    type: "password",
+    icon: <AiOutlineLock />,
+  },
+  {
+    label: "Confirm Password",
+    name: "confirmPassword",
+    type: "password",
+    icon: <AiOutlineLock />,
+  },
+].map((field, index) => (
+  <div key={index}>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {field.label}
+    </label>
+    <div className="relative">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+        {field.icon}
+      </span>
+
+      <input
+        type={
+          field.name === "password"
+            ? showPassword
+              ? "text"
+              : "password"
+            : field.name === "confirmPassword"
+            ? showConfirmPassword
+              ? "text"
+              : "password"
+            : field.type
+        }
+        name={field.name}
+        placeholder={`Enter ${field.label.toLowerCase()}`}
+        value={formData[field.name]}
+        onChange={handleChange}
+        required
+        className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-gray-100 hover:bg-white placeholder:text-gray-400"
+      />
+
+      {(field.name === "password" || field.name === "confirmPassword") && (
+        <button
+          type="button"
+          onClick={() =>
+            field.name === "password"
+              ? setShowPassword(!showPassword)
+              : setShowConfirmPassword(!showConfirmPassword)
+          }
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+        >
+          {field.name === "password" && (showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />)}
+          {field.name === "confirmPassword" && (showConfirmPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />)}
+        </button>
+      )}
+    </div>
+  </div>
+))}
 
             {/* Account Type Selection */}
             <div>
