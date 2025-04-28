@@ -197,6 +197,13 @@ class Tour(models.Model):
         ('classical', 'Classical'),
     ]
     
+    SEASON_CHOICES = [
+        ('summer', 'Summer'),
+        ('winter', 'Winter'),
+        ('monsoon', 'Monsoon'),
+    ]
+    
+    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -211,6 +218,10 @@ class Tour(models.Model):
     tour_type = models.CharField(max_length=20, choices=TOUR_TYPE_CHOICES, null=True, blank=True)  # New field
     tags = models.ManyToManyField(TourTag, related_name="tours", blank=True)  # New field
     ai_keywords = models.JSONField(default=list)  # For storing processed keywords
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    
+    season = models.CharField(max_length=10, choices=SEASON_CHOICES, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -258,37 +269,37 @@ class TourGallery(models.Model):
     image = models.ImageField(upload_to="tours/gallery_images/")
     uploaded_at = models.DateTimeField(auto_now_add=True)    
 
-# ✅ Tour Package Model
-class TourPackage(models.Model):
-    SEASON_CHOICES = [
-        ('summer', 'Summer'),
-        ('winter', 'Winter'),
-        ('monsoon', 'Monsoon'),
-    ]
+# # ✅ Tour Package Model
+# class TourPackage(models.Model):
+#     SEASON_CHOICES = [
+#         ('summer', 'Summer'),
+#         ('winter', 'Winter'),
+#         ('monsoon', 'Monsoon'),
+#     ]
     
-    TOUR_TYPE_CHOICES = [
-        ('party', 'Party'),
-        ('family', 'Family'),
-        ('dj_night', 'DJ Night'),
-        ('classical', 'Classical'),
-    ]
+#     TOUR_TYPE_CHOICES = [
+#         ('party', 'Party'),
+#         ('family', 'Family'),
+#         ('dj_night', 'DJ Night'),
+#         ('classical', 'Classical'),
+#     ]
     
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    price_per_person = models.FloatField()  # Updated field
-    season = models.CharField(max_length=10, choices=SEASON_CHOICES)
-    availability = models.IntegerField()
-    company = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company_tour_packages")
-    location = models.CharField(max_length=255)
-    min_group_size = models.IntegerField(default=1)  # New field
-    max_group_size = models.IntegerField(default=10)  # New field
-    tour_type = models.CharField(max_length=20, choices=TOUR_TYPE_CHOICES, null=True, blank=True)  # New field
-    tags = models.ManyToManyField(TourTag, related_name="tour_packages", blank=True)  # New field
-    created_at = models.DateTimeField(auto_now_add=True)
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     title = models.CharField(max_length=255)
+#     description = models.TextField()
+#     price_per_person = models.FloatField()  # Updated field
+#     season = models.CharField(max_length=10, choices=SEASON_CHOICES)
+#     availability = models.IntegerField()
+#     company = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company_tour_packages")
+#     location = models.CharField(max_length=255)
+#     min_group_size = models.IntegerField(default=1)  # New field
+#     max_group_size = models.IntegerField(default=10)  # New field
+#     tour_type = models.CharField(max_length=20, choices=TOUR_TYPE_CHOICES, null=True, blank=True)  # New field
+#     tags = models.ManyToManyField(TourTag, related_name="tour_packages", blank=True)  # New field
+#     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.title
+#     def __str__(self):
+#         return self.title
 
 # ✅ Booking Model
 class Booking(models.Model):
@@ -300,7 +311,7 @@ class Booking(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
-    tour = models.ForeignKey(TourPackage, on_delete=models.CASCADE, related_name="bookings")
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="bookings")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     booking_date = models.DateTimeField(auto_now_add=True)
     number_of_people = models.IntegerField(default=1)  # New field
@@ -311,9 +322,10 @@ class Booking(models.Model):
 # ✅ Payment Model
 class Payment(models.Model):
     METHOD_CHOICES = [
-        ('card', 'Credit/Debit Card'),
-        ('paypal', 'PayPal'),
-        ('stripe', 'Stripe'),
+('easypaisa', 'Easypaisa'),
+('jazzcash', 'JazzCash'),
+('bank_transfer', 'Bank Transfer'),
+('cash', 'Cash'),
     ]
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -324,7 +336,7 @@ class Payment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name="payment")
     amount = models.FloatField()
-    method = models.CharField(max_length=10, choices=METHOD_CHOICES)
+    method = models.CharField(max_length=20, choices=METHOD_CHOICES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -340,7 +352,7 @@ class Review(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
-    tour = models.ForeignKey(TourPackage, on_delete=models.CASCADE, related_name="reviews", null=True, blank=True)
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="reviews", null=True, blank=True)
     company = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company_reviews", null=True, blank=True)
     rating = models.IntegerField()
     comment = models.TextField()

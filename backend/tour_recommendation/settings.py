@@ -9,11 +9,28 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
+import environ
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialise environ
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+# Read .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# Now use env() to configure Django
+DEBUG = env('DEBUG')
+SECRET_KEY = env('SECRET_KEY')
+
+# Add the OpenWeatherMap key
+OPENWEATHER_API_KEY = env('OPENWEATHER_API_KEY')
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,6 +43,7 @@ SECRET_KEY = 'django-insecure-j*o_ia&3eqa30iidl4=vf%u9+f$iwjp1fy-o@4r6#o2lt#n_o#
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 
 # Application definition

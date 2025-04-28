@@ -96,13 +96,13 @@ class TourAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
     readonly_fields = ('created_at',)
 
-# Tour Package Admin
-class TourPackageAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price_per_person', 'season', 'tour_type', 'location', 'availability')
-    list_filter = ('season', 'tour_type', 'location')
-    search_fields = ('title', 'description')
-    filter_horizontal = ('tags',)
-    readonly_fields = ('created_at',)
+# # Tour Package Admin
+# class TourPackageAdmin(admin.ModelAdmin):
+#     list_display = ('title', 'price_per_person', 'season', 'tour_type', 'location', 'availability')
+#     list_filter = ('season', 'tour_type', 'location')
+#     search_fields = ('title', 'description')
+#     filter_horizontal = ('tags',)
+#     readonly_fields = ('created_at',)
 
 # Company Profile Admin
 class CompanyProfileAdmin(admin.ModelAdmin):
@@ -170,7 +170,7 @@ class NotificationAdmin(admin.ModelAdmin):
 # Register all models
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Tour, TourAdmin)
-admin.site.register(TourPackage, TourPackageAdmin)
+# admin.site.register(TourPackage, TourPackageAdmin)
 admin.site.register(CompanyProfile, CompanyProfileAdmin)
 admin.site.register(UserTourPreference, UserTourPreferenceAdmin)
 admin.site.register(TourTag, TourTagAdmin)

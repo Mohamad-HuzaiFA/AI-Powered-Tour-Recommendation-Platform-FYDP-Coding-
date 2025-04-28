@@ -2,7 +2,6 @@ from django.urls import path
 from .views import CreateReviewView, MarkNotificationReadView, TourReviewsListView, UserNotificationsView, UserSignupView, UserLoginView,protected_view
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import TourListCreateView, TourDetailView, TourImageUploadView, UploadTourGalleryImageView
-from .views import TourPackageListView, TourPackageCreateView, TourPackageDetailView
 from .views import CreateBookingView, TouristBookingListView, CompanyBookingListView, UpdateBookingStatusView
 from .views import PaymentCreateView, PaymentUpdateView, PaymentDetailView
 # from .api import recommend
@@ -33,9 +32,9 @@ urlpatterns = [
 
     path('tours/<uuid:tour_id>/upload-images/', UploadTourGalleryImageView.as_view(), name='upload-tour-images'),
     
-    path('tour-packages/', TourPackageListView.as_view(), name='tour-package-list'),
-    path('tour-packages/create/', TourPackageCreateView.as_view(), name='tour-package-create'),
-    path('tour-packages/<uuid:pk>/', TourPackageDetailView.as_view(), name='tour-package-detail'),
+    # path('tour-packages/', TourPackageListView.as_view(), name='tour-package-list'),
+    # path('tour-packages/create/', TourPackageCreateView.as_view(), name='tour-package-create'),
+    # path('tour-packages/<uuid:pk>/', TourPackageDetailView.as_view(), name='tour-package-detail'),
     
     path('bookings/create/', CreateBookingView.as_view(), name='create-booking'),
     path('bookings/', TouristBookingListView.as_view(), name='tourist-bookings'),

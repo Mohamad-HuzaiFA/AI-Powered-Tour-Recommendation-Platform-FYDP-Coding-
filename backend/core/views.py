@@ -89,17 +89,34 @@ class BookTourView(generics.CreateAPIView):
     serializer_class = TourSerializer
     permission_classes = [IsAuthenticated, IsTourist]
 
-# Tour List and Create View
+# # List + Create Tours
+# class TourListCreateView(generics.ListCreateAPIView):
+#     queryset = Tour.objects.all()
+#     serializer_class = TourSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+#     parser_classes = [MultiPartParser, FormParser]
+
+#     def perform_create(self, serializer):
+#         serializer.save(company=self.request.user)
+
+
+# # Retrieve / Update / Delete a single Tour
+# class TourDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Tour.objects.all()
+#     serializer_class = TourSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+from .pricing_utils import calculate_dynamic_price  # Import the dynamic pricing function
+
+# List + Create Tours (with dynamic pricing)
 class TourListCreateView(generics.ListCreateAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
-
     def perform_create(self, serializer):
         serializer.save(company=self.request.user)
 
-# Tour Detail View
+# Retrieve / Update / Delete a single Tour (with dynamic pricing)
 class TourDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
@@ -149,32 +166,32 @@ class UploadTourGalleryImageView(APIView):
 
 
 
-from .models import TourPackage
-from .serializers import TourPackageSerializer
+# from .models import TourPackage
+# from .serializers import TourPackageSerializer
 
-#  List all packages (Tourists & Companies)
-class TourPackageListView(generics.ListAPIView):
-    queryset = TourPackage.objects.all()
-    serializer_class = TourPackageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+# #  List all packages (Tourists & Companies)
+# class TourPackageListView(generics.ListAPIView):
+#     queryset = TourPackage.objects.all()
+#     serializer_class = TourPackageSerializer
+#     permission_classes = [permissions.IsAuthenticated]
 
-#  Create a tour package (Only Tourism Companies)
-class TourPackageCreateView(generics.CreateAPIView):
-    queryset = TourPackage.objects.all()
-    serializer_class = TourPackageSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
+# #  Create a tour package (Only Tourism Companies)
+# class TourPackageCreateView(generics.CreateAPIView):
+#     queryset = TourPackage.objects.all()
+#     serializer_class = TourPackageSerializer
+#     permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
 
-    def perform_create(self, serializer):
-        serializer.save(company=self.request.user)  # Assign logged-in company
+#     def perform_create(self, serializer):
+#         serializer.save(company=self.request.user)  # Assign logged-in company
 
-#  Retrieve, Update, Delete a package (Only the creator can modify)
-class TourPackageDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TourPackage.objects.all()
-    serializer_class = TourPackageSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
+# #  Retrieve, Update, Delete a package (Only the creator can modify)
+# class TourPackageDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = TourPackage.objects.all()
+#     serializer_class = TourPackageSerializer
+#     permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
 
-    def get_queryset(self):
-        return TourPackage.objects.filter(company=self.request.user)
+#     def get_queryset(self):
+#         return TourPackage.objects.filter(company=self.request.user)
 
 
 
