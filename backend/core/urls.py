@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateReviewView, MarkNotificationReadView, TourReviewsListView, UserNotificationsView, UserSignupView, UserLoginView,protected_view
+from .views import CreateReviewView, MarkNotificationReadView, TourReviewsListView, UserNotificationsView, UserSignupView, UserLoginView,protected_view, tour_pricing_view
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import TourListCreateView, TourDetailView, TourImageUploadView, UploadTourGalleryImageView
 from .views import CreateBookingView, TouristBookingListView, CompanyBookingListView, UpdateBookingStatusView
@@ -32,6 +32,9 @@ urlpatterns = [
 
     path('tours/<uuid:tour_id>/upload-images/', UploadTourGalleryImageView.as_view(), name='upload-tour-images'),
     
+    # Pricing preview for tours
+    path("tour/pricing-preview/", tour_pricing_view, name="tour-pricing-preview"),
+
     # path('tour-packages/', TourPackageListView.as_view(), name='tour-package-list'),
     # path('tour-packages/create/', TourPackageCreateView.as_view(), name='tour-package-create'),
     # path('tour-packages/<uuid:pk>/', TourPackageDetailView.as_view(), name='tour-package-detail'),
@@ -58,5 +61,8 @@ urlpatterns = [
     # Notification Endpoints
     path("notifications/", UserNotificationsView.as_view(), name="user-notifications"),
     path("notifications/<uuid:notification_id>/mark-read/", MarkNotificationReadView.as_view(), name="mark-notification-read"),
+
+    
+
 ]
 

@@ -51,7 +51,7 @@ const SignUp = () => {
       setMessage("Signup successful! Redirecting...");
       setTimeout(() => {
         router.push("/login");
-      }, 100);
+      }, 100);                    
     } catch (err) {
       console.error("Signup error:", err);
       setError(

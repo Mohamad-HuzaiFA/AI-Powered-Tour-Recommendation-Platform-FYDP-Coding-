@@ -363,3 +363,28 @@ class MarkNotificationReadView(APIView):
         notification.status = "read"
         notification.save()
         return Response({"message": "Notification marked as read"}, status=200)
+    
+    
+    
+
+from django.http import JsonResponse
+from .pricing_utils import get_weather_data, calculate_dynamic_price
+from .map_utils import get_static_map_url
+
+def tour_pricing_view(request):
+    location = request.GET.get("location")
+    base_price = float(request.GET.get("base_price", 100))
+    tour_date = request.GET.get("date")
+
+    weather = get_weather_data(location)
+    if weather:
+        map_url = get_static_map_url(weather["lat"], weather["lon"])
+        dynamic_price = calculate_dynamic_price(base_price, location, tour_date)
+        return JsonResponse({
+            "price": dynamic_price,
+            "temperature": round(weather["temp"] - 273.15, 2),  # Celsius
+            "map_url": map_url
+        })
+
+    return JsonResponse({"error": "Invalid location"}, status=400)
+    

@@ -2,7 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Notification, Review, Tour, TourImage
-from .pricing_utils import calculate_dynamic_price
+from .pricing_utils import calculate_dynamic_price, get_weather_data
+from .map_utils import get_static_map_url
 from datetime import date
 
 User = get_user_model()
@@ -57,43 +58,65 @@ class TourImageSerializer(serializers.ModelSerializer):
         return value
 
 
-# class TourSerializer(serializers.ModelSerializer):
-#     gallery_images = TourImageSerializer(many=True, read_only=True)
-#     main_image = serializers.ImageField(required=True)
 
+# class TourSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Tour
-#         fields = ['id', 'title', 'description', 'price', 'duration', 'location', 
-#                   'company', 'main_image', 'gallery_images', 'availability', 'created_at']
+#         fields = [
+#             'id', 'title', 'description', 'price_per_person', 'dynamic_price',
+#             'duration',
+#             'location', 'main_image', 'availability', 'min_group_size',
+#             'max_group_size', 'tour_type', 'season', 'tags',
+#             'ai_keywords', 'start_date', 'end_date', 'created_at',
+#         ]
+#         read_only_fields = ['id', 'company', 'created_at']
+#     def get_dynamic_price(self, tour: Tour):
+#         # 1) Get the base price as float
+#         base = float(tour.price_per_person)
+
+#         # 2) Location string (e.g. "Karachi,PK")
+#         loc = tour.location
+
+#         # 3) Decide which date to use:
+#         #    • If you want to price by the tour’s start_date, use that.
+#         #    • Otherwise, fall back to today.
+#         tour_date = tour.start_date or date.today()
+
+#         # 4) Call your pricing util and return
+#         return calculate_dynamic_price(
+#             base_price=base,
+#             location=loc,
+#             tour_date=tour_date.isoformat()
+#         )
+
 class TourSerializer(serializers.ModelSerializer):
+    dynamic_price = serializers.SerializerMethodField()
+    map_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Tour
         fields = [
             'id', 'title', 'description', 'price_per_person', 'dynamic_price',
+            'map_url',
             'duration',
             'location', 'main_image', 'availability', 'min_group_size',
             'max_group_size', 'tour_type', 'season', 'tags',
             'ai_keywords', 'start_date', 'end_date', 'created_at',
         ]
         read_only_fields = ['id', 'company', 'created_at']
-    def get_dynamic_price(self, tour: Tour):
-        # 1) Get the base price as float
+
+    def get_dynamic_price(self, tour):
         base = float(tour.price_per_person)
-
-        # 2) Location string (e.g. "Karachi,PK")
         loc = tour.location
-
-        # 3) Decide which date to use:
-        #    • If you want to price by the tour’s start_date, use that.
-        #    • Otherwise, fall back to today.
         tour_date = tour.start_date or date.today()
+        return calculate_dynamic_price(base, loc, tour_date.isoformat())
 
-        # 4) Call your pricing util and return
-        return calculate_dynamic_price(
-            base_price=base,
-            location=loc,
-            tour_date=tour_date.isoformat()
-        )
+    def get_map_url(self, tour):
+        weather = get_weather_data(tour.location)
+        if weather:
+            return get_static_map_url(weather["lat"], weather["lon"])
+        return None
+
     
 
 # from .models import TourPackage
