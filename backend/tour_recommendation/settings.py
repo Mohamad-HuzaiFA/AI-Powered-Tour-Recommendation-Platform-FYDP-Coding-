@@ -81,6 +81,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',  # ✅ Requires authentication by default
     ],
+    
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 9,  
 }
 
 
@@ -106,7 +109,9 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow Next.js frontend to communicate with Django
+    "http://localhost:3001",
 ]
+
 
 ROOT_URLCONF = 'tour_recommendation.urls'
 

@@ -6,23 +6,6 @@ from django.conf import settings
 
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 
-# def get_weather_data(location):
-#     """Fetch weather data for a given location."""
-#     try:
-#         params = {
-#             "q": location,
-#             "appid": settings.OPENWEATHER_API_KEY,
-#             # optionally: "units": "metric"
-#         }
-#         response = requests.get(BASE_URL, params=params, timeout=5)
-#         data = response.json()
-#         if data.get("cod") != 200:
-#             # API returned an error code
-#             return None
-#         return data
-#     except requests.RequestException:
-#         return None
-
 def get_weather_data(location):
     """Fetch weather data for a given location."""
     try:
@@ -43,6 +26,12 @@ def get_weather_data(location):
     except requests.RequestException:
         return None
 
+def get_lat_lon_from_weather(location):
+    """Fetch latitude and longitude for a given location using OpenWeatherMap."""
+    weather_data = get_weather_data(location)
+    if weather_data:
+        return weather_data["lat"], weather_data["lon"]
+    return None, None
 
 def calculate_dynamic_price(base_price, location, tour_date):
     """Calculate dynamic price based on weather, season, and availability."""
@@ -66,3 +55,5 @@ def calculate_dynamic_price(base_price, location, tour_date):
 
     dynamic_price = base_price * weather_factor * season_factor * availability_factor
     return round(dynamic_price, 2)
+
+

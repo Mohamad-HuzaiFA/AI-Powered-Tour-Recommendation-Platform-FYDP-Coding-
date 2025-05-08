@@ -1,16 +1,18 @@
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import NotificationSerializer, ReviewSerializer, UserSignupSerializer, UserLoginSerializer, TourSerializer, TourImageSerializer
-from .models import Notification, Review, Tour, TourImage
+from .serializers import NotificationSerializer, ReviewSerializer, TourTagSerializer, UserSignupSerializer, UserLoginSerializer, TourSerializer, TourImageSerializer
+from .models import Notification, Review, Tour, TourImage, TourTag
 from .permissions import IsTourist, IsTourismCompany
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions,filters
 from rest_framework.parsers import MultiPartParser, FormParser
+from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Q
+
+
 
 
 # User Signup API
@@ -107,20 +109,90 @@ class BookTourView(generics.CreateAPIView):
 #     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 from .pricing_utils import calculate_dynamic_price  # Import the dynamic pricing function
 
-# List + Create Tours (with dynamic pricing)
-class TourListCreateView(generics.ListCreateAPIView):
-    queryset = Tour.objects.all()
+# # List + Create Tours (with dynamic pricing)
+# class TourListCreateView(generics.ListCreateAPIView):
+#     queryset = Tour.objects.all()
+#     serializer_class = TourSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+#     parser_classes = [MultiPartParser, FormParser]
+#     def perform_create(self, serializer):
+#         serializer.save(company=self.request.user)
+
+# # Retrieve / Update / Delete a single Tour (with dynamic pricing)
+# class TourDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Tour.objects.all()
+#     serializer_class = TourSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+# List + Create Tours for Company Admin Panel
+class CompanyTourListView(generics.ListCreateAPIView):
     serializer_class = TourSerializer
-    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [permissions.IsAuthenticated, IsTourismCompany]  # Only logged-in companies can access/create
+
+    def get_queryset(self):
+        """
+        Returns only the tours created by the logged-in company.
+        """
+        return Tour.objects.filter(company=self.request.user)
+
     def perform_create(self, serializer):
         serializer.save(company=self.request.user)
 
-# Retrieve / Update / Delete a single Tour (with dynamic pricing)
+# List + Create Tours (Public GET, Authenticated Tourism Company POST)
+# class TourListCreateView(generics.ListCreateAPIView):
+#     queryset = Tour.objects.all()
+#     serializer_class = TourSerializer
+#     parser_classes = [MultiPartParser, FormParser]
+
+#     def get_permissions(self):
+#         if self.request.method == 'POST':
+#             return [permissions.IsAuthenticated(), IsTourismCompany()]
+#         return [permissions.AllowAny()]  # Public GET access
+
+#     def perform_create(self, serializer):
+#         serializer.save(company=self.request.user)
+
+
+class TourListCreateView(generics.ListCreateAPIView):
+    queryset = Tour.objects.all()
+    serializer_class = TourSerializer
+    parser_classes = [MultiPartParser, FormParser]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
+    search_fields = ['title', 'description', 'location', 'tags__name']
+    filterset_fields = ['tour_type', 'season', 'availability']
+    ordering_fields = ['price_per_person', 'created_at', 'title']
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated(), IsTourismCompany()]
+        return [permissions.AllowAny()]
+
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = queryset.filter(
+                Q(title__icontains=search_term) |
+                Q(description__icontains=search_term) |
+                Q(location__icontains=search_term) |
+                Q(tags__name__icontains=search_term)
+            ).distinct()
+        return queryset
+
+# Retrieve / Update / Delete a single Tour (Public GET, Authenticated Tourism Company edit/delete)
 class TourDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            return [permissions.IsAuthenticated(), IsTourismCompany()]
+        return [permissions.AllowAny()]
+
 
 
 # Tour Image Upload View
@@ -388,3 +460,9 @@ def tour_pricing_view(request):
 
     return JsonResponse({"error": "Invalid location"}, status=400)
     
+
+
+class TourTagListView(generics.ListAPIView):
+    queryset = TourTag.objects.all()
+    serializer_class = TourTagSerializer
+    permission_classes = [permissions.AllowAny]  # Adjust permissions as needed

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateReviewView, MarkNotificationReadView, TourReviewsListView, UserNotificationsView, UserSignupView, UserLoginView,protected_view, tour_pricing_view
+from .views import CompanyTourListView, CreateReviewView, MarkNotificationReadView, TourReviewsListView, TourTagListView, UserNotificationsView, UserSignupView, UserLoginView,protected_view, tour_pricing_view
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import TourListCreateView, TourDetailView, TourImageUploadView, UploadTourGalleryImageView
 from .views import CreateBookingView, TouristBookingListView, CompanyBookingListView, UpdateBookingStatusView
@@ -23,6 +23,12 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('protected-endpoint/', protected_view, name='protected'),
+    # Endpoints for Company Admin Panel
+    path('company/tours/', CompanyTourListView.as_view(), name="company-tour-list-create"),
+
+    # New URL for fetching tour tags
+    path('tags/', TourTagListView.as_view(), name='tour-tags-list'),
+
 
     path('tours/', TourListCreateView.as_view(), name="tour-list-create"),
     path('tours/<uuid:pk>/', TourDetailView.as_view(), name="tour-detail"),

@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Notification, Review, Tour, TourImage
-from .pricing_utils import calculate_dynamic_price, get_weather_data
+from .models import Notification, Review, Tour, TourImage, TourTag
+from .pricing_utils import calculate_dynamic_price, get_lat_lon_from_weather
 from .map_utils import get_static_map_url
 from datetime import date
 
@@ -58,52 +58,24 @@ class TourImageSerializer(serializers.ModelSerializer):
         return value
 
 
-
-# class TourSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Tour
-#         fields = [
-#             'id', 'title', 'description', 'price_per_person', 'dynamic_price',
-#             'duration',
-#             'location', 'main_image', 'availability', 'min_group_size',
-#             'max_group_size', 'tour_type', 'season', 'tags',
-#             'ai_keywords', 'start_date', 'end_date', 'created_at',
-#         ]
-#         read_only_fields = ['id', 'company', 'created_at']
-#     def get_dynamic_price(self, tour: Tour):
-#         # 1) Get the base price as float
-#         base = float(tour.price_per_person)
-
-#         # 2) Location string (e.g. "Karachi,PK")
-#         loc = tour.location
-
-#         # 3) Decide which date to use:
-#         #    • If you want to price by the tour’s start_date, use that.
-#         #    • Otherwise, fall back to today.
-#         tour_date = tour.start_date or date.today()
-
-#         # 4) Call your pricing util and return
-#         return calculate_dynamic_price(
-#             base_price=base,
-#             location=loc,
-#             tour_date=tour_date.isoformat()
-#         )
-
 class TourSerializer(serializers.ModelSerializer):
     dynamic_price = serializers.SerializerMethodField()
-    map_url = serializers.SerializerMethodField()
-
+    latitude = serializers.SerializerMethodField()
+    longitude = serializers.SerializerMethodField()
+    map_url = serializers.SerializerMethodField()  # Re-add map_url if you want it as a fallback
+    main_image = serializers.ImageField(required=False)  # Make it not required for updates  
     class Meta:
         model = Tour
         fields = [
             'id', 'title', 'description', 'price_per_person', 'dynamic_price',
-            'map_url',
+            'latitude', 'longitude',
+            'map_url',  # Include map_url
             'duration',
             'location', 'main_image', 'availability', 'min_group_size',
             'max_group_size', 'tour_type', 'season', 'tags',
             'ai_keywords', 'start_date', 'end_date', 'created_at',
         ]
-        read_only_fields = ['id', 'company', 'created_at']
+        read_only_fields = ['id', 'company', 'created_at', 'latitude', 'longitude', 'map_url']
 
     def get_dynamic_price(self, tour):
         base = float(tour.price_per_person)
@@ -111,13 +83,27 @@ class TourSerializer(serializers.ModelSerializer):
         tour_date = tour.start_date or date.today()
         return calculate_dynamic_price(base, loc, tour_date.isoformat())
 
-    def get_map_url(self, tour):
-        weather = get_weather_data(tour.location)
-        if weather:
-            return get_static_map_url(weather["lat"], weather["lon"])
-        return None
+    def get_latitude(self, tour):
+        latitude, _ = get_lat_lon_from_weather(tour.location)
+        return latitude
 
+    def get_longitude(self, tour):
+        _, longitude = get_lat_lon_from_weather(tour.location)
+        return longitude
+
+    def get_map_url(self, tour):
+        latitude, longitude = get_lat_lon_from_weather(tour.location)
+        if latitude and longitude:
+            return get_static_map_url(latitude, longitude)
+        return None
     
+
+
+class TourTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TourTag
+        fields = ['id', 'name']
+        read_only_fields = ['id']  # Ensure the ID is not editable during creation/update
 
 # from .models import TourPackage
 
@@ -187,4 +173,6 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
         fields = ['id', 'user', 'message', 'status', 'created_at']
         read_only_fields = ['id', 'user', 'message', 'created_at']
+    
+    
     

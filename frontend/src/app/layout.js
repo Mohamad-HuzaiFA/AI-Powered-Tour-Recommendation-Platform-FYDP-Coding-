@@ -31,6 +31,7 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "../app/globals.css";
+import Providers from "./Providers";
 // import './Styles/globals.css';
 
 
@@ -55,7 +56,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

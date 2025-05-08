@@ -9,13 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@tanstack/react-query": "^5.75.5",
+    "@tanstack/react-query-devtools": "^5.75.5",
     "axios": "^1.8.3",
+    "leaflet": "^1.9.4",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.487.0",
     "next": "^15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-fast-marquee": "^1.6.5",
-    "react-icons": "^5.5.0"
+    "react-hook-form": "^7.56.2",
+    "react-icons": "^5.5.0",
+    "react-leaflet": "^5.0.0",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.15",

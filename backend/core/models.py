@@ -190,17 +190,33 @@ class TourTag(models.Model):
 
 # ✅ Tour Model (Updated)
 class Tour(models.Model):
+    # TOUR_TYPE_CHOICES = [
+    #     ('party', 'Party'),
+    #     ('family', 'Family'),
+    #     ('dj_night', 'DJ Night'),
+    #     ('classical', 'Classical'),
+    # ]
     TOUR_TYPE_CHOICES = [
-        ('party', 'Party'),
-        ('family', 'Family'),
-        ('dj_night', 'DJ Night'),
-        ('classical', 'Classical'),
-    ]
+    ('adventure', 'Adventure'),
+    ('cultural', 'Cultural Immersion'),
+    ('historical', 'Historical Exploration'),
+    ('nature', 'Nature & Wildlife'),
+    ('beach', 'Beach Getaway'),
+    ('mountain', 'Mountain Expedition'),
+    ('city_tour', 'City Sightseeing'),
+    ('foodie', 'Food & Culinary'),
+    ('luxury', 'Luxury Escape'),
+    ('party', 'Party'),
+    ('family', 'Family'),
+    ('dj_night', 'DJ Night'),
+    ('classical', 'Classical'),
+]
     
     SEASON_CHOICES = [
         ('summer', 'Summer'),
         ('winter', 'Winter'),
         ('monsoon', 'Monsoon'),
+        ('spring', 'Spring'), 
     ]
     
     
@@ -220,6 +236,17 @@ class Tour(models.Model):
     ai_keywords = models.JSONField(default=list)  # For storing processed keywords
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    # ... other fields ...
+
+    def save(self, *args, **kwargs):
+        if not self.latitude or not self.longitude:
+            from .pricing_utils import get_lat_lon_from_weather
+            lat, lon = get_lat_lon_from_weather(self.location)
+            self.latitude = lat
+            self.longitude = lon
+        super().save(*args, **kwargs)
     
     season = models.CharField(max_length=10, choices=SEASON_CHOICES, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
