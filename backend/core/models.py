@@ -89,6 +89,7 @@ class Tour(models.Model):
     end_date = models.DateField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    # start_date = models.DateField()
     # ... other fields ...
 
     def save(self, *args, **kwargs):

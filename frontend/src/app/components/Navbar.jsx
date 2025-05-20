@@ -416,7 +416,11 @@ function Navbar() {
 
       {/* Call to Action Button */}
       <button className="hidden md:block bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition duration-300">
-        Get in Touch
+          <Link
+                      href="/signup">
+                         Get in Touch
+                    </Link>
+     
       </button>
 
       {/* Mobile Menu Button */}

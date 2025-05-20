@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',  # JWT Authentication
     'rest_framework_simplejwt.token_blacklist',
     'core',  # Our main app
+    'django_filters',
 ]
 
 
@@ -140,9 +141,9 @@ WSGI_APPLICATION = 'tour_recommendation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tour_db',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'huzaif143',
+        'PASSWORD': 'Aftab',
         'HOST': 'localhost',
         'PORT': '5432',
     }
