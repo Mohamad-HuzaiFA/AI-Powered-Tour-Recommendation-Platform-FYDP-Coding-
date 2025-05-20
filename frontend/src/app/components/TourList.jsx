@@ -10,29 +10,41 @@
 //   FaSortAmountUp,
 //   FaSortAlphaDown,
 //   FaStar,
+//   FaSearch,
 // } from "react-icons/fa";
 // import "@/app/packages/packages.css";
 // import TourListSkeletons from "./TourListSkeletons";
+// import { debounce } from "lodash"; // Import debounce
 
-// const ITEMS_PER_PAGE = 9; // Or 12 - ensure consistency with your backend's default
+// const ITEMS_PER_PAGE = 9; // Or 12
 
 // export default function TourList({ initialTours = [], initialCount = 0 }) {
 //   const router = useRouter();
 //   const [page, setPage] = useState(1);
 //   const [sortOption, setSortOption] = useState(null);
+//   const [searchQuery, setSearchQuery] = useState("");
 
 //   const {
 //     data: pagedData = { results: [], next: null, previous: null, count: 0 },
 //     isLoading,
+//     refetch,
 //   } = useQuery({
-//     queryKey: ["tours", page, sortOption],
+//     queryKey: ["tours", page, sortOption, searchQuery], // Include searchQuery in the key
 //     queryFn: () =>
 //       axios
 //         .get(`${process.env.NEXT_PUBLIC_API_URL}/api/tours/`, {
-//           params: { page, limit: ITEMS_PER_PAGE, sort: sortOption },
+//           params: {
+//             page,
+//             limit: ITEMS_PER_PAGE,
+//             sort: sortOption,
+//             search: searchQuery,
+//           }, // Send search query
 //         })
 //         .then((res) => res.data),
-//     initialData: page === 1 ? initialTours : undefined,
+//     initialData:
+//       page === 1 && !searchQuery // Only use initialTours if it's the first page and no search
+//         ? initialTours
+//         : undefined,
 //     keepPreviousData: true,
 //     staleTime: 1000 * 60 * 5,
 //   });
@@ -60,10 +72,6 @@
 //     [pagedData.results, sortOption, sortTours]
 //   );
 
-//   //   const totalPages = useMemo(() => {
-//   //     return Math.ceil(pagedData.count / ITEMS_PER_PAGE);
-//   //   }, [pagedData.count]);
-
 //   const totalPages = Math.ceil(pagedData.count / ITEMS_PER_PAGE);
 
 //   const handlePageChange = (newPage) => {
@@ -74,6 +82,14 @@
 //     setSortOption(newSortOption);
 //     setPage(1);
 //   };
+
+//   const handleSearchChange = useCallback(
+//     debounce((query) => {
+//       setSearchQuery(query);
+//       setPage(1); // Reset page on new search
+//     }, 300), // 300ms debounce delay
+//     []
+//   );
 
 //   const truncateDescription = (text, maxLength) => {
 //     if (!text || text.length <= maxLength) return text;
@@ -86,6 +102,22 @@
 
 //   return (
 //     <div className="secondPart py-12 bg-gray-100">
+//       {/* Search Input */}
+//       <div className="my-6 px-4 md:px-10 flex justify-center">
+//         <div className="relative w-full md:w-1/2">
+//           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+//             <FaSearch className="text-gray-400" />
+//           </div>
+//           <input
+//             type="text"
+//             id="search-tour"
+//             className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+//             placeholder="Search for tours..."
+//             onChange={(e) => handleSearchChange(e.target.value)}
+//           />
+//         </div>
+//       </div>
+
 //       {/* Sorting Buttons */}
 //       <div className="myOptions flex flex-wrap justify-center gap-4 py-6 px-4 md:px-10">
 //         {[
@@ -194,10 +226,13 @@ import {
   FaSortAlphaDown,
   FaStar,
   FaSearch,
+  FaBalanceScale, // Icon for compare
+  FaCheck, // Icon for added
 } from "react-icons/fa";
 import "@/app/packages/packages.css";
 import TourListSkeletons from "./TourListSkeletons";
 import { debounce } from "lodash"; // Import debounce
+import { useComparison } from "@/hooks/comparisonContext"; // Import the comparison hook
 
 const ITEMS_PER_PAGE = 9; // Or 12
 
@@ -206,6 +241,8 @@ export default function TourList({ initialTours = [], initialCount = 0 }) {
   const [page, setPage] = useState(1);
   const [sortOption, setSortOption] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { comparedTours, addToCompare, removeFromCompare, maxCompareLimit } =
+    useComparison();
 
   const {
     data: pagedData = { results: [], next: null, previous: null, count: 0 },
@@ -283,6 +320,17 @@ export default function TourList({ initialTours = [], initialCount = 0 }) {
       : `${truncated}...`;
   };
 
+  const handleCompareClick = (tourId, e) => {
+    e.stopPropagation(); // Prevent navigation to tour details
+    if (comparedTours.includes(tourId)) {
+      removeFromCompare(tourId);
+    } else {
+      addToCompare(tourId);
+    }
+  };
+
+  const isCompared = (tourId) => comparedTours.includes(tourId);
+
   return (
     <div className="secondPart py-12 bg-gray-100">
       {/* Search Input */}
@@ -336,10 +384,12 @@ export default function TourList({ initialTours = [], initialCount = 0 }) {
             {displayedTours.map((tour) => (
               <div
                 key={tour.id}
-                onClick={() => router.push(`/tour_info/${tour.id}`)}
-                className="cursor-pointer bg-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-[1.02] hover:shadow-lg"
+                className="bg-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-[1.02] hover:shadow-lg relative"
               >
-                <div className="relative">
+                <div
+                  className="relative"
+                  onClick={() => router.push(`/tour_info/${tour.id}`)}
+                >
                   <img
                     loading="lazy"
                     src={tour.main_image}
@@ -361,11 +411,35 @@ export default function TourList({ initialTours = [], initialCount = 0 }) {
                     <span className="flex items-center text-yellow-500">
                       <FaStar className="mr-1" /> {tour.rating || "N/A"}
                     </span>
-                    <button className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card click
+                        router.push(`/tour_info/${tour.id}`);
+                      }}
+                      className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
+                    >
                       View Details
                     </button>
                   </div>
                 </div>
+                <button
+                  onClick={(e) => handleCompareClick(tour.id, e)}
+                  disabled={
+                    comparedTours.length >= maxCompareLimit &&
+                    !isCompared(tour.id)
+                  }
+                  className={`absolute top-2 right-2 bg-white bg-opacity-75 rounded-md p-2 text-gray-600 hover:text-red-600 transition-colors duration-200 z-20 ${
+                    isCompared(tour.id) ? "text-red-600" : ""
+                  }`}
+                >
+                  {isCompared(tour.id) ? <FaCheck /> : <FaBalanceScale />}
+                </button>
+                {comparedTours.length >= maxCompareLimit &&
+                  !isCompared(tour.id) && (
+                    <div className="absolute bottom-2 left-2 bg-red-100 text-red-500 text-xs font-semibold px-2 py-1 rounded-md z-10">
+                      Limit
+                    </div>
+                  )}
               </div>
             ))}
           </div>

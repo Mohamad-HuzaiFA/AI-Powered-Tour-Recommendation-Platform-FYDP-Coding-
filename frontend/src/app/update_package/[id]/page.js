@@ -25,6 +25,9 @@ export default function UpdatePackage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [galleryFiles, setGalleryFiles] = useState([]);
+
+
   useEffect(() => {
     async function fetchTags() {
       try {
@@ -78,6 +81,12 @@ export default function UpdatePackage() {
     );
   };
 
+  const handleGalleryChange = e => {
+    // limit to 5 files max
+    const files = Array.from(e.target.files).slice(0, 5);
+    setGalleryFiles(files);
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -119,6 +128,31 @@ export default function UpdatePackage() {
         body: formData,
       });
       toast.success(`Tour Updated successfully!`);
+
+    // 2️⃣ upload gallery images if any
+    if (galleryFiles.length) {
+      const galleryData = new FormData();
+      galleryFiles.forEach(file => galleryData.append('image', file));
+
+      const galRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/tours/${id}/upload-images/`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: galleryData,
+        }
+      );
+
+      if (!galRes.ok) {
+        const text = await galRes.text();
+        toast.error(`Gallery upload failed: ${text}`);
+        setLoading(false);
+        return;
+      }
+
+      toast.success('Gallery images uploaded!');
+    }
+
 
       if (res.ok) {
         router.push("/managePackages");
@@ -279,6 +313,24 @@ export default function UpdatePackage() {
           />
         </div>
 
+        {/* New: gallery upload */}
+        <div>
+          <label className="block mb-1">
+            Gallery Images (up to 5)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleGalleryChange}
+          />
+          {galleryFiles.length > 0 && (
+            <p className="text-sm mt-1">
+              {galleryFiles.length} file{galleryFiles.length > 1 ? 's' : ''} selected
+            </p>
+          )}
+        </div>
+
         <button
           type="submit"
           disabled={loading}
@@ -312,3 +364,8 @@ export default function UpdatePackage() {
     
   );
 }
+
+
+
+
+

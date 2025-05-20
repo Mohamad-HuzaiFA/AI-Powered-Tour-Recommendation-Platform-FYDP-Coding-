@@ -214,7 +214,7 @@ class UploadTourGalleryImageView(APIView):
 
     def post(self, request, tour_id, *args, **kwargs):
         # Ensure images are provided
-        images = request.FILES.getlist("image")  # Get multiple images
+        images = request.FILES.getlist("images")  # Get multiple images
         if not images:
             return Response({"error": "No image files provided."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -466,3 +466,4 @@ class TourTagListView(generics.ListAPIView):
     queryset = TourTag.objects.all()
     serializer_class = TourTagSerializer
     permission_classes = [permissions.AllowAny]  # Adjust permissions as needed
+    pagination_class = None

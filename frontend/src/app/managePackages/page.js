@@ -1,62 +1,212 @@
 
+// // "use client";
+// // import { useRouter } from "next/navigation";
+// // import React, { useEffect, useState } from "react";
+// // import axios from "axios";
+// // import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+// // import Link from "next/link";
+// // import { toast, ToastContainer } from "react-toastify";
+// // import "react-toastify/dist/ReactToastify.css";
+
+// // function ManagePackages() {
+// //   const router = useRouter();
+// //   const [tours, setTours] = useState([]);
+// //   const [loading, setLoading] = useState(true);
+// //   const [error, setError] = useState(null);
+
+// //   useEffect(() => {
+// //     fetchTours();
+// //   }, []);
+
+// //   const fetchTours = async () => {
+// //     setLoading(true);
+// //     setError(null);
+// //     try {
+// //       const token = localStorage.getItem('accessToken'); // Or however you store your token
+// //       const response = await axios.get(
+// //         `${process.env.NEXT_PUBLIC_API_URL}/api/company/tours/`,
+// //         {
+// //           headers: {
+// //             Authorization: `Bearer ${token}`, // Assuming you're using JWT Bearer authentication
+// //           },
+// //         }
+// //       );
+// //       setTours(response.data);
+// //     } catch (err) {
+// //       console.error("Error fetching tours:", err);
+// //       setError("Failed to load tours.");
+// //       toast.error("Failed to load tours.");
+// //     } finally {
+// //       setLoading(false);
+// //     }
+// //   };
+
+// //   const handleDelete = async (tourId) => {
+// //     if (!window.confirm("Are you sure you want to delete this tour?")) return;
+// //     try {
+// //       const token = localStorage.getItem('accessToken'); // Or however you store your token
+// //       await axios.delete(`http://127.0.0.1:8000/api/tours/${tourId}/`, {
+// //         headers: {
+// //           Authorization: `Bearer ${token}`, // Assuming JWT Bearer authentication
+// //         },
+// //       });
+// //       toast.success("Tour deleted successfully!");
+// //       fetchTours();
+// //     } catch (err) {
+// //       console.error("Error deleting tour:", err);
+// //       toast.error("Failed to delete tour.");
+// //     }
+// //   };
+// //   return (
+// //     <div className="min-h-screen bg-gray-100 py-10">
+// //       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+// //         <div className="mb-8 flex justify-between items-center">
+// //           <h2 className="text-3xl font-semibold text-gray-800">
+// //             Manage Tour Packages
+// //           </h2>
+// //           <Link
+// //             href="/add_package"
+// //             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+// //           >
+// //             Add New Package
+// //           </Link>
+// //         </div>
+
+// //         {loading ? (
+// //           <p className="text-center text-gray-600 py-6">Loading tours...</p>
+// //         ) : error ? (
+// //           <div className="text-red-500">{error}</div>
+// //         ) : tours.length === 0 ? (
+// //           <p className="text-gray-600 text-center py-6">No tours available.</p>
+// //         ) : (
+// //           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+// //             {tours.map((tour) => (
+// //               <div
+// //                 key={tour.id}
+// //                 className="bg-white shadow-md rounded-lg overflow-hidden transition-shadow hover:shadow-lg"
+// //               >
+// //                 {tour.main_image && (
+// //                   <img
+// //                     src={`${tour.main_image}`}
+// //                     alt={tour.title}
+// //                     className="w-full h-64 object-cover"
+// //                   />
+// //                 )}
+// //                 <div className="p-6">
+// //                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
+// //                     {tour.title}
+// //                   </h3>
+// //                   <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+// //                     {tour.description}
+// //                   </p>
+// //                   <p className="font-bold text-indigo-600 mb-3">
+// //                     Price: ${tour.price_per_person}
+// //                   </p>
+// //                   <div className="flex justify-end gap-2">
+// //                     <Link
+// //                       href={`/update_package/${tour.id}`}
+// //                       className="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-3 rounded text-sm font-semibold focus:outline-none focus:shadow-outline"
+// //                     >
+// //                       <PencilIcon className="h-5 w-5 inline-block mr-1" />
+// //                       Update
+// //                     </Link>
+// //                     <button
+// //                       onClick={() => handleDelete(tour.id)}
+// //                       className="bg-red-500 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold focus:outline-none focus:shadow-outline"
+// //                     >
+// //                       <TrashIcon className="h-5 w-5 inline-block mr-1" />
+// //                       Delete
+// //                     </button>
+// //                   </div>
+// //                 </div>
+// //               </div>
+// //             ))}
+// //           </div>
+// //         )}
+// //       </div>
+// //       {/* Toast container */}
+// //       <ToastContainer
+// //         position="top-right"
+// //         autoClose={3000}
+// //         hideProgressBar={false}
+// //         newestOnTop
+// //         closeOnClick
+// //         rtl={false}
+// //         pauseOnFocusLoss
+// //         draggable
+// //         pauseOnHover
+// //         theme="light"
+// //       />
+// //     </div>
+// //   );
+// // }
+
+// // export default ManagePackages;
+
+
+
+
+
 // "use client";
 // import { useRouter } from "next/navigation";
-// import React, { useEffect, useState } from "react";
+// import React, { useCallback } from "react";
 // import axios from "axios";
 // import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 // import Link from "next/link";
 // import { toast, ToastContainer } from "react-toastify";
+// import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // import "react-toastify/dist/ReactToastify.css";
+// import TourListSkeletons from "@/app/components/TourListSkeletons";
 
-// function ManagePackages() {
+
+// export default function ManagePackages() {
 //   const router = useRouter();
-//   const [tours, setTours] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
+//   const queryClient = useQueryClient();
 
-//   useEffect(() => {
-//     fetchTours();
-//   }, []);
-
-//   const fetchTours = async () => {
-//     setLoading(true);
-//     setError(null);
-//     try {
-//       const token = localStorage.getItem('accessToken'); // Or however you store your token
-//       const response = await axios.get(
+//   // 1) Fetch company tours via React Query
+//   const { data: tours = [], isLoading, isError } = useQuery({
+//     queryKey: ["companyTours"],
+//     queryFn: async () => {
+//       const token = localStorage.getItem("accessToken");
+//       const res = await axios.get(
 //         `${process.env.NEXT_PUBLIC_API_URL}/api/company/tours/`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`, // Assuming you're using JWT Bearer authentication
-//           },
-//         }
+//         { headers: { Authorization: `Bearer ${token}` } }
 //       );
-//       setTours(response.data);
-//     } catch (err) {
-//       console.error("Error fetching tours:", err);
-//       setError("Failed to load tours.");
+//       return res.data;
+//     },
+//     staleTime: 1000 * 60 * 5,    // cache for 5 minutes
+//     refetchOnWindowFocus: false, // don’t refetch when window gains focus
+//     onError: () => {
 //       toast.error("Failed to load tours.");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+//     },
+//   });
 
-//   const handleDelete = async (tourId) => {
-//     if (!window.confirm("Are you sure you want to delete this tour?")) return;
-//     try {
-//       const token = localStorage.getItem('accessToken'); // Or however you store your token
-//       await axios.delete(`http://127.0.0.1:8000/api/tours/${tourId}/`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`, // Assuming JWT Bearer authentication
-//         },
-//       });
+//   // 2) Mutation to delete a tour, with invalidation
+//   const deleteMutation = useMutation({
+//     mutationFn: async (tourId) => {
+//       const token = localStorage.getItem("accessToken");
+//       await axios.delete(
+//         `${process.env.NEXT_PUBLIC_API_URL}/api/tours/${tourId}/`,
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+//     },
+//     onSuccess: () => {
 //       toast.success("Tour deleted successfully!");
-//       fetchTours();
-//     } catch (err) {
-//       console.error("Error deleting tour:", err);
+//       queryClient.invalidateQueries(["companyTours"]);
+//     },
+//     onError: () => {
 //       toast.error("Failed to delete tour.");
-//     }
-//   };
+//     },
+//   });
+
+//   const handleDelete = useCallback(
+//     (tourId) => {
+//       if (!window.confirm("Are you sure you want to delete this tour?")) return;
+//       deleteMutation.mutate(tourId);
+//     },
+//     [deleteMutation]
+//   );
+
 //   return (
 //     <div className="min-h-screen bg-gray-100 py-10">
 //       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,16 +216,18 @@
 //           </h2>
 //           <Link
 //             href="/add_package"
-//             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+//             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 //           >
 //             Add New Package
 //           </Link>
 //         </div>
 
-//         {loading ? (
-//           <p className="text-center text-gray-600 py-6">Loading tours...</p>
-//         ) : error ? (
-//           <div className="text-red-500">{error}</div>
+//         {isLoading ? (
+//           <TourListSkeletons />
+//         ) : isError ? (
+//           <div className="text-center text-red-500 py-6">
+//             Failed to load tours.
+//           </div>
 //         ) : tours.length === 0 ? (
 //           <p className="text-gray-600 text-center py-6">No tours available.</p>
 //         ) : (
@@ -87,7 +239,7 @@
 //               >
 //                 {tour.main_image && (
 //                   <img
-//                     src={`${tour.main_image}`}
+//                     src={tour.main_image}
 //                     alt={tour.title}
 //                     className="w-full h-64 object-cover"
 //                   />
@@ -105,14 +257,14 @@
 //                   <div className="flex justify-end gap-2">
 //                     <Link
 //                       href={`/update_package/${tour.id}`}
-//                       className="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-3 rounded text-sm font-semibold focus:outline-none focus:shadow-outline"
+//                       className="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-3 rounded text-sm font-semibold"
 //                     >
 //                       <PencilIcon className="h-5 w-5 inline-block mr-1" />
 //                       Update
 //                     </Link>
 //                     <button
 //                       onClick={() => handleDelete(tour.id)}
-//                       className="bg-red-500 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold focus:outline-none focus:shadow-outline"
+//                       className="bg-red-500 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold"
 //                     >
 //                       <TrashIcon className="h-5 w-5 inline-block mr-1" />
 //                       Delete
@@ -124,88 +276,92 @@
 //           </div>
 //         )}
 //       </div>
+
 //       {/* Toast container */}
 //       <ToastContainer
 //         position="top-right"
 //         autoClose={3000}
-//         hideProgressBar={false}
-//         newestOnTop
-//         closeOnClick
-//         rtl={false}
-//         pauseOnFocusLoss
-//         draggable
-//         pauseOnHover
 //         theme="light"
 //       />
 //     </div>
 //   );
 // }
 
-// export default ManagePackages;
 
 
 
 
 
-"use client";
-import { useRouter } from "next/navigation";
-import React, { useCallback } from "react";
-import axios from "axios";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import { toast, ToastContainer } from "react-toastify";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import "react-toastify/dist/ReactToastify.css";
-import TourListSkeletons from "@/app/components/TourListSkeletons";
 
+
+
+
+
+'use client';
+
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import TourListSkeletons from '@/app/components/TourListSkeletons';
 
 export default function ManagePackages() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
 
-  // 1) Fetch company tours via React Query
-  const { data: tours = [], isLoading, isError } = useQuery({
-    queryKey: ["companyTours"],
-    queryFn: async () => {
-      const token = localStorage.getItem("accessToken");
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/company/tours/`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return res.data;
-    },
-    staleTime: 1000 * 60 * 5,    // cache for 5 minutes
-    refetchOnWindowFocus: false, // don’t refetch when window gains focus
-    onError: () => {
-      toast.error("Failed to load tours.");
-    },
+  const fetchCompanyTours = async ({ queryKey }) => {
+    const [_key, page] = queryKey;
+    const token = localStorage.getItem('accessToken');
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/company/tours/`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { page },
+      }
+    );
+    return res.data; // { count, next, previous, results: [...] }
+  };
+
+  const {
+    data = { results: [], next: null, previous: null, count: 0 },
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['companyTours', page],
+    queryFn: fetchCompanyTours,
+    keepPreviousData: true,
+    staleTime: 5 * 60 * 1000,
+    onError: () => toast.error('Failed to load tours.'),
   });
 
-  // 2) Mutation to delete a tour, with invalidation
   const deleteMutation = useMutation({
     mutationFn: async (tourId) => {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem('accessToken');
       await axios.delete(
         `${process.env.NEXT_PUBLIC_API_URL}/api/tours/${tourId}/`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
     },
     onSuccess: () => {
-      toast.success("Tour deleted successfully!");
-      queryClient.invalidateQueries(["companyTours"]);
+      toast.success('Tour deleted successfully!');
+      queryClient.invalidateQueries(['companyTours']);
     },
-    onError: () => {
-      toast.error("Failed to delete tour.");
-    },
+    onError: () => toast.error('Failed to delete tour.'),
   });
 
-  const handleDelete = useCallback(
-    (tourId) => {
-      if (!window.confirm("Are you sure you want to delete this tour?")) return;
-      deleteMutation.mutate(tourId);
-    },
-    [deleteMutation]
-  );
+  const handleDelete = (tourId) => {
+    if (!window.confirm('Are you sure you want to delete this tour?')) return;
+    deleteMutation.mutate(tourId);
+  };
+
+  // Calculate total pages based on count and backend page size (default 10)
+  const pageSize = 10;
+  const totalPages = Math.ceil(data.count / pageSize);
 
   return (
     <div className="min-h-screen bg-gray-100 py-10">
@@ -214,12 +370,12 @@ export default function ManagePackages() {
           <h2 className="text-3xl font-semibold text-gray-800">
             Manage Tour Packages
           </h2>
-          <Link
-            href="/add_package"
+          <button
+            onClick={() => router.push('/add_package')}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Add New Package
-          </Link>
+          </button>
         </div>
 
         {isLoading ? (
@@ -228,59 +384,88 @@ export default function ManagePackages() {
           <div className="text-center text-red-500 py-6">
             Failed to load tours.
           </div>
-        ) : tours.length === 0 ? (
+        ) : data.results.length === 0 ? (
           <p className="text-gray-600 text-center py-6">No tours available.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tours.map((tour) => (
-              <div
-                key={tour.id}
-                className="bg-white shadow-md rounded-lg overflow-hidden transition-shadow hover:shadow-lg"
-              >
-                {tour.main_image && (
-                  <img
-                    src={tour.main_image}
-                    alt={tour.title}
-                    className="w-full h-64 object-cover"
-                  />
-                )}
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                    {tour.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                    {tour.description}
-                  </p>
-                  <p className="font-bold text-indigo-600 mb-3">
-                    Price: ${tour.price_per_person}
-                  </p>
-                  <div className="flex justify-end gap-2">
-                    <Link
-                      href={`/update_package/${tour.id}`}
-                      className="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-3 rounded text-sm font-semibold"
-                    >
-                      <PencilIcon className="h-5 w-5 inline-block mr-1" />
-                      Update
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(tour.id)}
-                      className="bg-red-500 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold"
-                    >
-                      <TrashIcon className="h-5 w-5 inline-block mr-1" />
-                      Delete
-                    </button>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {data.results.map((tour) => (
+                <div
+                  key={tour.id}
+                  className="bg-white shadow-md rounded-lg overflow-hidden transition-shadow hover:shadow-lg"
+                >
+                  {tour.main_image && (
+                    <img
+                      src={tour.main_image}
+                      alt={tour.title}
+                      className="w-full h-64 object-cover"
+                    />
+                  )}
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                      {tour.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                      {tour.description}
+                    </p>
+                    <p className="font-bold text-indigo-600 mb-3">
+                      Price: ${tour.price_per_person}
+                    </p>
+                    <div className="flex justify-end gap-2">
+                      <Link
+                        href={`/update_package/${tour.id}`}
+                        className="bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-3 rounded text-sm font-semibold"
+                      >
+                        <PencilIcon className="h-5 w-5 inline-block mr-1" />
+                        Update
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(tour.id)}
+                        className="bg-red-500 hover:bg-red-700 text-white py-2 px-3 rounded text-sm font-semibold"
+                      >
+                        <TrashIcon className="h-5 w-5 inline-block mr-1" />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* ——— Pagination Controls ——— */}
+            <div className="flex justify-center items-center gap-4 py-8">
+              <button
+                onClick={() => setPage((old) => Math.max(old - 1, 1))}
+                disabled={!data.previous}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+              >
+                ← Prev
+              </button>
+              <span className="text-gray-700">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                onClick={() => data.next && setPage((old) => old + 1)}
+                disabled={!data.next}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Next →
+              </button>
+            </div>
+          </>
         )}
       </div>
 
-      {/* Toast container */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
         theme="light"
       />
     </div>
