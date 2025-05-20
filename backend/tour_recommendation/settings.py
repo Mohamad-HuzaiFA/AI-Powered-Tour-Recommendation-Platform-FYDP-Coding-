@@ -80,7 +80,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',  # ✅ Important for file uploads
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # ✅ Requires authentication by default
+        'rest_framework.permissions.AllowAny',  # ✅ Requires authentication by default
     ],
     
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

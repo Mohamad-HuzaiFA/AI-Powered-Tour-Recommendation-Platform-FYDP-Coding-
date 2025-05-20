@@ -15,6 +15,127 @@ from django.db.models import Q
 
 
 
+
+
+
+
+
+
+# tours/views.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+
+from .models import Payment
+from .serializers import (
+    PaymentReceiptUploadSerializer,
+    AdminPaymentVerifySerializer,
+)
+from .permissions import IsAdminUser
+
+
+# ───────────────────────────────────────────────
+# 1️⃣  User – upload receipt
+# POST /api/payments/upload-receipt/
+# ───────────────────────────────────────────────
+@api_view(["POST"])
+# @permission_classes([IsAuthenticated])
+def upload_receipt(request):
+    serializer = PaymentReceiptUploadSerializer(
+        data=request.data, context={"request": request}
+    )
+    serializer.is_valid(raise_exception=True)
+
+    payment = serializer.validated_data["instance"]
+    serializer.update(payment, serializer.validated_data)
+
+    return Response({"detail": "Receipt uploaded. Awaiting verification."},
+                    status=status.HTTP_200_OK)
+
+
+# ───────────────────────────────────────────────
+# 2️⃣  User – check payment/booking status (optional)
+# GET /api/bookings/<uuid:booking_id>/payment-status/
+# ───────────────────────────────────────────────
+@api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+def payment_status(request, booking_id):
+    payment = get_object_or_404(
+        Payment, booking__id=booking_id, booking__user=request.user
+    )
+    return Response({
+        "payment_status": payment.status,
+        "booking_status": payment.booking.status,
+        "verified_at": payment.verified_at,
+    })
+
+
+# ───────────────────────────────────────────────
+# 3️⃣  Admin – verify / reject payment
+# PATCH /api/admin/payments/<uuid:payment_id>/verify/
+# body: { "status": "successful" | "failed" }
+# ───────────────────────────────────────────────
+@api_view(["PATCH"])
+# @permission_classes([IsAuthenticated, IsAdminUser])
+def admin_verify_payment(request, payment_id):
+    payment = get_object_or_404(Payment, id=payment_id)
+
+    serializer = AdminPaymentVerifySerializer(payment, data=request.data,
+                                              partial=True)
+    serializer.is_valid(raise_exception=True)
+    new_status = serializer.validated_data["status"]
+
+    if new_status == "successful":
+        payment.mark_verified(admin_user=request.user)
+    else:
+        payment.status = "failed"
+        payment.save(update_fields=["status"])
+        payment.booking.status = "cancelled"
+        payment.booking.save()
+
+    return Response({"detail": f"Payment marked {payment.status}."},
+                    status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # User Signup API
 class UserSignupView(APIView):
     permission_classes = [AllowAny]

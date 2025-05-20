@@ -166,29 +166,272 @@ class Booking(models.Model):
     def __str__(self):
         return f"Booking by {self.user.email} for {self.tour.title}"
 
-# ✅ Payment Model
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # ✅ Payment Model
+# class Payment(models.Model):
+#     METHOD_CHOICES = [
+# ('easypaisa', 'Easypaisa'),
+# ('jazzcash', 'JazzCash'),
+# ('bank_transfer', 'Bank Transfer'),
+# ('cash', 'Cash'),
+#     ]
+#     STATUS_CHOICES = [
+#         ('pending', 'Pending'),
+#         ('successful', 'Successful'),
+#         ('failed', 'Failed'),
+#     ]
+    
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name="payment")
+#     amount = models.FloatField()
+#     method = models.CharField(max_length=20, choices=METHOD_CHOICES)
+#     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"Payment {self.id} - {self.status}"
+
+
+
+
+
+
+
+
+
+
+# class Payment(models.Model):
+    
+#     METHOD_CHOICES = [
+# ('easypaisa', 'Easypaisa'),
+# ('jazzcash', 'JazzCash'),
+# ('bank_transfer', 'Bank Transfer'),
+# ('cash', 'Cash'),
+#     ]
+#     STATUS_CHOICES = [
+#         ('pending', 'Pending'),
+#         ('successful', 'Successful'),
+#         ('failed', 'Failed'),
+#     ]
+    
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name="payment")
+#     amount = models.FloatField()
+#     method = models.CharField(max_length=20, choices=METHOD_CHOICES)
+#     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"Payment {self.id} - {self.status}"
+
+#     receipt_image   = models.ImageField(upload_to="payments/receipts/",
+#                                         null=True, blank=True)
+#     transaction_id  = models.CharField(max_length=100, null=True, blank=True)
+
+#     verified_by     = models.ForeignKey(
+#         User, null=True, blank=True,
+#         on_delete=models.SET_NULL, related_name="verified_payments"
+#     )
+#     verified_at     = models.DateTimeField(null=True, blank=True)
+
+#     # Optional: simple commission tracking
+#     platform_commission = models.FloatField(default=0.0)
+#     amount_to_company   = models.FloatField(default=0.0)
+
+#     def mark_verified(self, admin_user: "User", commission_pct: float = 0.10):
+#         """Utility called by admin view/service."""
+#         self.status       = "successful"
+#         self.verified_by  = admin_user
+#         self.verified_at  = timezone.now()
+#         self.platform_commission = round(self.amount * commission_pct, 2)
+#         self.amount_to_company   = round(self.amount - self.platform_commission, 2)
+#         self.save()
+
+#         # sync booking status
+#         self.booking.status = "confirmed"
+#         self.booking.save()
+
+#         # fire notification helpers (simple example)
+#         Notification.objects.create(
+#             user=self.booking.user,
+#             message=f"Your payment for booking {self.booking.id} is verified!"
+#         )
+#         Notification.objects.create(
+#             user=self.booking.tour.company,
+#             message=f"Payment confirmed for booking {self.booking.id}. "
+#                     f"You will receive Rs. {self.amount_to_company}"
+#         )
+
+
+
+
+
+
+
+
+# tours/models.py
+
+import uuid
+from django.db import models
+from django.conf import settings
+from django.utils import timezone
+
+
 class Payment(models.Model):
     METHOD_CHOICES = [
-('easypaisa', 'Easypaisa'),
-('jazzcash', 'JazzCash'),
-('bank_transfer', 'Bank Transfer'),
-('cash', 'Cash'),
+        ('easypaisa', 'Easypaisa'),
+        ('jazzcash', 'JazzCash'),
+        ('bank_transfer', 'Bank Transfer'),
+        ('cash', 'Cash'),
     ]
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('successful', 'Successful'),
         ('failed', 'Failed'),
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name="payment")
+    booking = models.OneToOneField("Booking", on_delete=models.CASCADE, related_name="payment")
+
     amount = models.FloatField()
     method = models.CharField(max_length=20, choices=METHOD_CHOICES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # ✅ NEW FIELDS for manual receipt upload
+    receipt_image = models.ImageField(upload_to='payments/receipts/', null=True, blank=True)
+    transaction_id = models.CharField(max_length=100, null=True, blank=True)
+
+    # ✅ Admin verification fields
+    verified_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name="verified_payments"
+    )
+    verified_at = models.DateTimeField(null=True, blank=True)
+
+    # ✅ Optional commission tracking
+    platform_commission = models.FloatField(default=0.0)
+    amount_to_company = models.FloatField(default=0.0)
+
     def __str__(self):
         return f"Payment {self.id} - {self.status}"
+
+    def mark_verified(self, admin_user: "User", commission_pct: float = 0.10):
+        """
+        Call this from admin or view to mark payment verified and calculate commission.
+        """
+        self.status = "successful"
+        self.verified_by = admin_user
+        self.verified_at = timezone.now()
+        self.platform_commission = round(self.amount * commission_pct, 2)
+        self.amount_to_company = round(self.amount - self.platform_commission, 2)
+        self.save()
+
+        # Sync booking status to confirmed
+        self.booking.status = "confirmed"
+        self.booking.save()
+
+        # Send notifications to user and company (simple example)
+        from .models import Notification
+        Notification.objects.create(
+            user=self.booking.user,
+            message=f"Your payment for booking {self.booking.id} is verified!"
+        )
+        Notification.objects.create(
+            user=self.booking.tour.company,
+            message=f"Payment confirmed for booking {self.booking.id}. "
+                    f"You will receive Rs. {self.amount_to_company}"
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ✅ Review Model (Updated)
 class Review(models.Model):

@@ -17,8 +17,15 @@ from core import views
 
 # urlpatterns = [
 #     path("api/test-endpoint/", test_view),]
+# tours/urls.py
+from django.urls import path
+from . import views
 
 urlpatterns = [
+    path("payments/upload-receipt/",   views.upload_receipt),
+    path("bookings/<uuid:booking_id>/payment-status/", views.payment_status),
+    # admin-side
+    path("admin/payments/<uuid:payment_id>/verify/",   views.admin_verify_payment),
     path('signup/', UserSignupView.as_view(), name='signup'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

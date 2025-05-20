@@ -8,6 +8,100 @@ from datetime import date
 
 User = get_user_model()
 
+# tours/serializers.py
+from rest_framework import serializers
+from .models import Payment
+
+class PaymentReceiptUploadSerializer(serializers.ModelSerializer):
+    booking_id = serializers.UUIDField(write_only=False, required=False)
+
+    class Meta:
+        model  = Payment
+        fields = [
+            "id", "booking_id", "receipt_image", "transaction_id",
+            "amount", "method", "status", "created_at"
+        ]
+        read_only_fields = ["id", "amount", "method", "status", "created_at"]
+
+    def validate(self, data):
+        # ensure the payment really belongs to this user
+        user = self.context["request"].user
+        try:
+            payment = Payment.objects.get(booking__id=data["booking_id"],
+                                          booking__user=user)
+        except Payment.DoesNotExist:
+            raise serializers.ValidationError("No pending payment for this booking.")
+        data["instance"] = payment
+        return data
+
+    def create(self, validated):
+        # never called – we're updating existing Payment
+        pass
+
+    def update(self, instance, validated):
+        instance.receipt_image  = validated.get("receipt_image")
+        instance.transaction_id = validated.get("transaction_id", "")
+        instance.save(update_fields=["receipt_image", "transaction_id"])
+        return instance
+
+
+class AdminPaymentVerifySerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = Payment
+        fields = ["status"]       # we only allow changing status → successful / failed
+
+    def validate_status(self, val):
+        if val not in ("successful", "failed"):
+            raise serializers.ValidationError("Status must be successful or failed.")
+        return val
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # User Signup Serializer
 class UserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
