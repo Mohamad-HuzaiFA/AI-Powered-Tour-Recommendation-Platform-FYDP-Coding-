@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',  # JWT Authentication
     'rest_framework_simplejwt.token_blacklist',
     'core',  # Our main app
-    'django_filters',
 ]
 
 
@@ -80,7 +79,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',  # ✅ Important for file uploads
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # ✅ Requires authentication by default
+        'rest_framework.permissions.IsAuthenticated',  # ✅ Requires authentication by default
     ],
     
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -141,9 +140,9 @@ WSGI_APPLICATION = 'tour_recommendation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'tour_db',
         'USER': 'postgres',
-        'PASSWORD': 'Aftab',
+        'PASSWORD': 'huzaif143',
         'HOST': 'localhost',
         'PORT': '5432',
     }

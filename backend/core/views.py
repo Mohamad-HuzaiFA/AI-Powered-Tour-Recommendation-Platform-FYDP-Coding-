@@ -457,8 +457,8 @@ class PaymentCreateView(APIView):
             return Response({"error": "Payment already exists for this booking"}, status=status.HTTP_400_BAD_REQUEST)
 
         # # ✅ Validate Amount (Must Match Tour Price)
-        if amount != booking.tour.price:
-            amount = booking.tour.price
+        if amount != booking.tour.price_per_person:
+            amount = booking.tour.price_per_person
         #     return Response({"error": "Invalid amount. Must match tour price."}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Create a Payment Entry (Pending)

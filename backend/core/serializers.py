@@ -58,50 +58,6 @@ class AdminPaymentVerifySerializer(serializers.ModelSerializer):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # User Signup Serializer
 class UserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
@@ -207,20 +163,48 @@ class TourTagSerializer(serializers.ModelSerializer):
 #         fields = '__all__'
 
 
-
+# tours/serializers.py
 from rest_framework import serializers
-from .models import Booking
+from django.contrib.auth import get_user_model
+# Make sure to import your Booking and Tour models
+from .models import Notification, Review, Tour, TourImage, TourTag, Payment, Booking # ADD Booking and Tour
+from .pricing_utils import calculate_dynamic_price, get_lat_lon_from_weather
+from .map_utils import get_static_map_url
+from datetime import date
+
+User = get_user_model()
+
+# ... (your other serializers like PaymentReceiptUploadSerializer, etc.) ...
+
+# Ensure you import Booking model here
+# from .models import Booking # Already imported above, just ensuring it's clear
 
 class BookingSerializer(serializers.ModelSerializer):
-    status = serializers.CharField(read_only=True)  # Status is read-only during booking
+    # This will allow you to send 'tour_id' (a UUID) from the frontend
+    # and DRF will automatically convert it to a Tour instance.
+    # You need to ensure the Tour model is imported.
+    tour = serializers.PrimaryKeyRelatedField(queryset=Tour.objects.all())
+
+    # This will allow you to send 'booking_date' string from the frontend.
+    # It correctly expects a date string in 'YYYY-MM-DD' format.
+    booking_date = serializers.DateTimeField()
+
+    status = serializers.CharField(read_only=True) # Status is still read-only, set by backend
 
     class Meta:
         model = Booking
+        # These are the fields that the API will handle.
+        # 'id' is for output.
+        # 'user' is handled by the create method (setting request.user).
+        # 'status' is read-only (set by backend logic).
+        # 'tour' and 'booking_date' are now explicitly made writable by the fields above.
         fields = ['id', 'user', 'tour', 'status', 'booking_date']
-        read_only_fields = ['id', 'user', 'status', 'booking_date']
+        # Remove 'booking_date' and 'tour' from read_only_fields list
+        read_only_fields = ['id', 'user', 'status']
 
     def create(self, validated_data):
-        validated_data["user"] = self.context["request"].user  # Set the authenticated user
+        # This method automatically sets the user based on the authenticated request
+        validated_data["user"] = self.context["request"].user
         return super().create(validated_data)
 
 class BookingUpdateSerializer(serializers.ModelSerializer):
@@ -228,10 +212,7 @@ class BookingUpdateSerializer(serializers.ModelSerializer):
         model = Booking
         fields = ['status']
 
-
-from rest_framework import serializers
-from .models import Payment
-
+# ... (your other serializers like PaymentSerializer, AdminPaymentVerifySerializer) ...
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment

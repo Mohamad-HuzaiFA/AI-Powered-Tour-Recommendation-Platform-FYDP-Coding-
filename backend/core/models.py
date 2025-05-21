@@ -171,44 +171,6 @@ class Booking(models.Model):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # # ✅ Payment Model
 # class Payment(models.Model):
 #     METHOD_CHOICES = [
