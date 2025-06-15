@@ -4,24 +4,51 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-# ✅ User Model (Tourist & Tourism Company)
+# accounts/models.py
+
+import uuid
+from django.db import models
+from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.core.validators import RegexValidator # Import RegexValidator
+
 class User(AbstractUser):
+    # Define your custom username validator
+    # This regex allows letters (a-z, A-Z), numbers (0-9),
+    # spaces, and the specific symbols: @ . + - _
+    # Be cautious with changes to this regex; test thoroughly.
+    custom_username_validator = RegexValidator(
+        r'^[a-zA-Z0-9 @\.\+\-_]+$', # Regex pattern
+        'Enter a valid username. This value may contain only letters, numbers, spaces, and @/./+/-/_ characters.'
+    )
+
+    # Override the default username field from AbstractUser
+    username = models.CharField(
+        ('username'),
+        max_length=150, # Keep the max_length as appropriate
+        unique=True,
+        help_text=('Required. 150 characters or fewer. Letters, digits, spaces, and @/./+/-/_ characters.'),
+        validators=[custom_username_validator], # Apply your custom validator here
+        error_messages={
+            'unique': ("A user with that username already exists."),
+        },
+    )
+
     USER_TYPES = [
         ('tourist', 'Tourist'),
         ('company', 'Tourism Company'),
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPES)
     profile_info = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # ✅ Fixing ManyToMany conflicts
+    # ✅ Fixing ManyToMany conflicts (these are fine as they are)
     groups = models.ManyToManyField(Group, related_name="custom_user_groups", blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True)
 
-    # ✅ New Fields
+    # ✅ New Fields (these are fine as they are)
     is_verified = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     company_name = models.CharField(max_length=255, null=True, blank=True)
@@ -29,6 +56,32 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.get_user_type_display()})"
+
+# # ✅ User Model (Tourist & Tourism Company)
+# class User(AbstractUser):
+#     USER_TYPES = [
+#         ('tourist', 'Tourist'),
+#         ('company', 'Tourism Company'),
+#     ]
+    
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     email = models.EmailField(unique=True)
+#     user_type = models.CharField(max_length=10, choices=USER_TYPES)
+#     profile_info = models.JSONField(null=True, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     # ✅ Fixing ManyToMany conflicts
+#     groups = models.ManyToManyField(Group, related_name="custom_user_groups", blank=True)
+#     user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True)
+
+#     # ✅ New Fields
+#     is_verified = models.BooleanField(default=False)
+#     phone_number = models.CharField(max_length=20, null=True, blank=True)
+#     company_name = models.CharField(max_length=255, null=True, blank=True)
+#     website = models.URLField(null=True, blank=True)
+
+#     def __str__(self):
+#         return f"{self.username} ({self.get_user_type_display()})"
 
 # ✅ Tour Tag Model (New)
 class TourTag(models.Model):
